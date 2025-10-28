@@ -189,7 +189,3 @@ Tuân thủ 3 điều này → **Không bao giờ giẫm code nhau** ✅
 
 ---
 
-
-→ Mình hỗ trợ làm ngay!
-
-Bạn muốn mình tạo thêm **Flowchart minh họa quy trình làm việc nhóm** để nhóm bạn dễ nhìn hơn không?
