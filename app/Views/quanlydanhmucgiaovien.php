@@ -4,12 +4,12 @@
 include_once __DIR__ . '/../Controllers/cGiaoVien.php';
 include_once __DIR__ . '/../Controllers/cMonHoc.php';
 
-$pGV  = new cGiaoVien();
-$pMH  = new cMonHoc();
+$pGV = new cGiaoVien();
+$pMH = new cMonHoc();
 
 // ======= HANDLE POST (ADD / EDIT / DELETE) =======
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $action = $_POST['action'] ?? '';
+  $action    = $_POST['action'] ?? '';
 
   // Fields chung
   $hoten     = $_POST['hoten']      ?? '';
@@ -21,13 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $email     = $_POST['email']      ?? '';
   $trinhdo   = $_POST['trinhdo']    ?? '';
   $trangthai = $_POST['trangthai']  ?? 'hoatdong';
-  // MẢNG ID MÔN HỌC (từ checkbox)
-  $monhoc_ids = $_POST['monhoc_ids'] ?? [];
-  $_SESSION['message'] = 'DEBUG View monhoc_ids=' . htmlspecialchars(json_encode($monhoc_ids));
 
+  // Chỉ 1 môn: nhận mamh từ <select>, chuyển thành mảng 1 phần tử để tái dùng model hiện tại
+  $mamh       = isset($_POST['mamh']) ? intval($_POST['mamh']) : null;
+  $monhoc_ids = $mamh ? [$mamh] : [];
 
   if ($action === 'add') {
-    // insertTeacher(..., $monhoc_ids) – tham số $mon (text) bỏ
     $kq = $pGV->insertTeacher($hoten, $ngaysinh, $gioitinh, $cmnd, $diachi, $dienthoai, $email, $trinhdo, $trangthai, $monhoc_ids);
     $_SESSION['message'] = ($kq === true) ? "Thêm giáo viên thành công" : ("Không thêm được: " . ($kq ?: "Lỗi không xác định"));
     header("Location: index.php?act=quanlydanhmucgiaovien");
@@ -55,13 +54,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $action  = $_GET['action']  ?? '';
 $keyword = $_GET['keyword'] ?? '';
 
-// Với bản đơn giản này ta liệt kê toàn bộ + JOIN GROUP_CONCAT.
-// (Bạn có thể nâng cấp search sau.)
-$danhsach = ($action === 'search' && $keyword !== '')
-  ? $pGV->getAllTeachersBySearch($keyword)   // <-- dùng search
-  : $pGV->getAllTeachers();                  // <-- mặc định
+if ($action === 'search' && $keyword !== '') {
+  // Yêu cầu: Model có hàm searchTeachersWithSubjects($kw)
+  // và Controller có getAllTeachersBySearch($kw) gọi vào đó
+  if (method_exists($pGV, 'getAllTeachersBySearch')) {
+    $danhsach = $pGV->getAllTeachersBySearch($keyword);
+  } else {
+    // fallback: nếu controller cũ chưa có search thì liệt kê tất cả
+    $danhsach = $pGV->getAllTeachers();
+  }
+} else {
+  $danhsach = $pGV->getAllTeachers();
+}
 
-// Lấy danh sách môn cho modal THÊM
+// Lấy danh sách môn cho modal THÊM (resultset sẽ bị duyệt, nên cho Add và Edit gọi riêng)
 $dsMonHoc_Add = $pMH->getAllSubjects();
 ?>
 <!DOCTYPE html>
@@ -87,7 +93,7 @@ $dsMonHoc_Add = $pMH->getAllSubjects();
       <form class="d-flex gap-2" method="get" action="index.php">
         <input type="hidden" name="act" value="quanlydanhmucgiaovien">
         <input type="hidden" name="action" value="search">
-        <input class="form-control" name="keyword" placeholder="Tìm tên/email/sđt/CMND..." value="<?php echo htmlspecialchars($keyword); ?>">
+        <input class="form-control" name="keyword" placeholder="Tìm tên/email/sđt/CMND/tên môn..." value="<?php echo htmlspecialchars($keyword); ?>">
         <button class="btn btn-primary">Tìm kiếm</button>
       </form>
       <button class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#modalAdd">+ Thêm giáo viên</button>
@@ -114,7 +120,7 @@ $dsMonHoc_Add = $pMH->getAllSubjects();
           <?php if ($danhsach && mysqli_num_rows($danhsach) > 0): ?>
             <?php while ($row = mysqli_fetch_assoc($danhsach)): ?>
               <?php
-              // Lấy mảng ID môn của giáo viên này để tick sẵn khi Edit
+              // Lấy mảng ID môn của giáo viên này (nhưng do mỗi GV chỉ 1 môn, ta lấy phần tử đầu)
               $ids = $pGV->getSubjectIdsByTeacher($row['magv']);
               $ids_json = htmlspecialchars(json_encode($ids), ENT_QUOTES, 'UTF-8');
               ?>
@@ -218,19 +224,18 @@ $dsMonHoc_Add = $pMH->getAllSubjects();
               <input class="form-control" name="trinhdo" required>
             </div>
 
-            <!-- CHECKBOX MÔN HỌC (ADD) -->
+            <!-- SELECT MỘT MÔN (ADD) -->
             <div class="col-md-12 mb-2">
-              <label class="form-label">Môn giảng dạy</label><br>
-              <?php if ($dsMonHoc_Add && mysqli_num_rows($dsMonHoc_Add) > 0): ?>
-                <?php while ($m = mysqli_fetch_assoc($dsMonHoc_Add)): ?>
-                  <label class="me-3 mb-1">
-                    <input type="checkbox" name="monhoc_ids[]" value="<?php echo $m['mamh']; ?>">
-                    <?php echo htmlspecialchars($m['tenmh']); ?>
-                  </label>
-                <?php endwhile; ?>
-              <?php else: ?>
-                <div class="text-muted">Chưa có môn học nào</div>
-              <?php endif; ?>
+              <label class="form-label">Môn giảng dạy</label>
+              <select class="form-select" name="mamh" required>
+                <?php if ($dsMonHoc_Add && mysqli_num_rows($dsMonHoc_Add) > 0): ?>
+                  <?php while ($m = mysqli_fetch_assoc($dsMonHoc_Add)): ?>
+                    <option value="<?php echo $m['mamh']; ?>"><?php echo htmlspecialchars($m['tenmh']); ?></option>
+                  <?php endwhile; ?>
+                <?php else: ?>
+                  <option value="">-- Chưa có môn học --</option>
+                <?php endif; ?>
+              </select>
             </div>
 
             <div class="col-md-4 mb-2">
@@ -298,19 +303,23 @@ $dsMonHoc_Add = $pMH->getAllSubjects();
               <input class="form-control" id="e_trinhdo" name="trinhdo" required>
             </div>
 
-            <!-- CHECKBOX MÔN HỌC (EDIT) -->
-            <div class="col-md-12 mb-2" id="e_monhoc_group">
-              <label class="form-label">Môn giảng dạy</label><br>
-              <?php
-              // Gọi lại danh sách môn cho modal Edit
-              $dsMonHoc_Edit = $pMH->getAllSubjects();
-              while ($m2 = mysqli_fetch_assoc($dsMonHoc_Edit)):
-              ?>
-                <label class="me-3 mb-1">
-                  <input type="checkbox" name="monhoc_ids[]" value="<?php echo $m2['mamh']; ?>" class="e_mh">
-                  <?php echo htmlspecialchars($m2['tenmh']); ?>
-                </label>
-              <?php endwhile; ?>
+            <!-- SELECT MỘT MÔN (EDIT) -->
+            <div class="col-md-12 mb-2">
+              <label class="form-label">Môn giảng dạy</label>
+              <select class="form-select" name="mamh" id="e_mamh" required>
+                <?php
+                $dsMonHoc_Edit = $pMH->getAllSubjects();
+                if ($dsMonHoc_Edit && mysqli_num_rows($dsMonHoc_Edit) > 0):
+                  while ($m2 = mysqli_fetch_assoc($dsMonHoc_Edit)):
+                ?>
+                    <option value="<?php echo $m2['mamh']; ?>"><?php echo htmlspecialchars($m2['tenmh']); ?></option>
+                  <?php
+                  endwhile;
+                else:
+                  ?>
+                  <option value="">-- Chưa có môn học --</option>
+                <?php endif; ?>
+              </select>
             </div>
 
             <div class="col-md-4 mb-2">
@@ -331,7 +340,7 @@ $dsMonHoc_Add = $pMH->getAllSubjects();
 
   <script>
     /**
-     * monIds: mảng số (ID môn) để tick sẵn
+     * monIds: mảng số (ID môn). Vì mỗi GV chỉ 1 môn, ta lấy phần tử đầu để set vào <select id="e_mamh">
      */
     function setEditData(magv, hoten, ngaysinh, gioitinh, cmnd, diachi, sdt, email, trinhdo, trangthai, monIds) {
       document.getElementById('e_magv').value = magv;
@@ -345,15 +354,10 @@ $dsMonHoc_Add = $pMH->getAllSubjects();
       document.getElementById('e_trinhdo').value = trinhdo;
       document.getElementById('e_trangthai').value = trangthai;
 
-      // Reset & tick checkbox môn (class .e_mh)
-      const boxes = document.querySelectorAll('#e_monhoc_group .e_mh');
-      boxes.forEach(b => b.checked = false);
-      if (Array.isArray(monIds)) {
-        const set = new Set(monIds.map(Number));
-        boxes.forEach(b => {
-          if (set.has(Number(b.value))) b.checked = true;
-        });
-      }
+      // Set môn cho <select> (mỗi GV 1 môn)
+      const mamh = Array.isArray(monIds) && monIds.length ? String(monIds[0]) : '';
+      const sel = document.getElementById('e_mamh');
+      if (sel) sel.value = mamh;
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
