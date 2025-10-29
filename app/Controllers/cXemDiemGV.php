@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/../Models/mXemDiem.php';
+require_once __DIR__ . '/../Models/mXemDiemGV.php';
 
-class cXemDiem {
+class cXemDiemGV {
     public function hienThiDanhSach() {
-        $model = new mXemDiem();
+        $model = new mXemDiemGV();
         $mode = isset($_GET['mode']) ? $_GET['mode'] : 'list';
         $message = $messageType = '';
         
@@ -61,7 +61,7 @@ class cXemDiem {
             }
         }
         
-        include __DIR__ . '/../Views/xemdiem_form.php';
+    include __DIR__ . '/../Views/xemdiemGV.php';
     }
 }
 ?>

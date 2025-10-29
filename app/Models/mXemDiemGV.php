@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/ketnoi.php';
 
-class mXemDiem {
+class mXemDiemGV {
     private function query($sql) {
         $p = new clsKetNoi();
         $conn = $p->moKetNoi();

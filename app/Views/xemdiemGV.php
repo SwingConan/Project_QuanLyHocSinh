@@ -39,7 +39,7 @@
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">Danh sách học sinh</h4>
-                <a href="index.php?act=xemdiem&mode=them" class="btn btn-sm btn-light">
+                <a href="index.php?act=xemdiemGV&mode=them" class="btn btn-sm btn-light">
                     + Thêm điểm
                 </a>
             </div>
@@ -67,7 +67,7 @@
                             <td><?= htmlspecialchars($tenhs) ?></td>
                             <td><?= htmlspecialchars($lop) ?></td>
                             <td>
-                                <a href="index.php?act=xemdiem&mode=detail&mahs=<?= $mahsEncoded ?>" 
+                                <a href="index.php?act=xemdiemGV&mode=detail&mahs=<?= $mahsEncoded ?>" 
                                    class="btn btn-sm btn-primary">
                                     Xem điểm
                                 </a>
@@ -95,7 +95,7 @@
                 <h4 class="mb-0">Thêm điểm học sinh</h4>
             </div>
             <div class="card-body">
-                <form method="POST" action="index.php?act=xemdiem&mode=them">
+                <form method="POST" action="index.php?act=xemdiemGV&mode=them">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="mahs" class="form-label">Mã HS *</label>
@@ -179,7 +179,7 @@
                     
                     <div class="d-flex gap-2">
                         <button type="submit" name="submit" class="btn btn-success">Thêm điểm</button>
-                        <a href="index.php?act=xemdiem" class="btn btn-secondary">Quay lại</a>
+                        <a href="index.php?act=xemdiemGV" class="btn btn-secondary">Quay lại</a>
                     </div>
                 </form>
             </div>
@@ -188,7 +188,7 @@
     <?php else: ?>
         <!-- CHI TIẾT ĐIỂM -->
         <div class="mb-3">
-            <a href="index.php?act=xemdiem" class="btn btn-secondary">← Quay lại</a>
+            <a href="index.php?act=xemdiemGV" class="btn btn-secondary">← Quay lại</a>
         </div>
 
         <?php if (isset($thongTin) && $thongTin): ?>
