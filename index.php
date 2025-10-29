@@ -21,7 +21,6 @@ if (isset($_SESSION['message'])) {
 <body class="bg-light">
     <div class="container-fluid p-0">
 
-        <!-- HEADER -->
         <header class="bg-primary text-white py-3 shadow-sm">
             <div class="container d-flex justify-content-between align-items-center">
                 <h3 class="mb-0">Hệ thống Quản lý Trường học</h3>
@@ -33,12 +32,12 @@ if (isset($_SESSION['message'])) {
                         Quản lý giáo viên
                     </a>
                     <a href="index.php?act=xemdiem" class="text-white me-3 text-decoration-none">Xem điểm</a>
+                    <a href="index.php?act=quanlythoikhoabieu" class="text-white me-3 text-decoration-none">Thời Khóa Biểu</a>
                     <a href="index.php?act=dangxuat" class="text-white text-decoration-none">Đăng xuất</a>
                 </nav>
             </div>
         </header>
 
-        <!-- MAIN -->
         <main class="container my-4">
             <?php
             if (isset($_GET['act'])) {
@@ -64,6 +63,7 @@ if (isset($_SESSION['message'])) {
 
                     case 'quanlydanhmucgiaovien':
                         include "app/Views/quanlydanhmucgiaovien.php";
+                        break; 
                     case 'xemdiem':
                         // use the controller so it prepares $dsKy / $bangdiem for the view
                         require_once __DIR__ . '/app/Controllers/cXemDiem.php';
@@ -75,6 +75,42 @@ if (isset($_SESSION['message'])) {
                         echo "<h4 class='text-center text-danger'>Bạn đã đăng xuất!</h4>";
                         break;
 
+                    // == BẮT ĐẦU PHẦN ĐỒNG BỘ CHO TKB ==
+                    case 'quanlythoikhoabieu':
+                        include_once "app/Controllers/cThoiKhoaBieu.php";
+                        $controller = new cThoiKhoaBieu();
+
+                        // Lấy 'action' từ GET, nếu không có thì mặc định là 'index' (hiển thị danh sách)
+                        // VD: index.php?act=quanlythoikhoabieu&action=showAddForm
+                        $action = isset($_GET['action']) ? $_GET['action'] : 'index';
+
+                        // Phân luồng nghiệp vụ dựa trên 'action'
+                        switch ($action) {
+                            case 'index':
+                                $controller->index(); // Hiển thị trang TKB chính (quanlythoikhoabieu.php)
+                                break;
+                            case 'showAddForm':
+                                $controller->showAddForm(); // Hiển thị form thêm (themTKB.php)
+                                break;
+                            case 'handleAddTKB':
+                                $controller->handleAddTKB(); // Xử lý POST để thêm
+                                break;
+                            case 'showUpdateForm':
+                                $controller->showUpdateForm(); // Hiển thị form sửa (suaTKB.php)
+                                break;
+                            case 'handleUpdateTKB':
+                                $controller->handleUpdateTKB(); // Xử lý POST để cập nhật
+                                break;
+                            case 'handleDeleteTKB':
+                                $controller->handleDeleteTKB(); // Xử lý POST để xóa
+                                break;
+                            default:
+                                $controller->index(); // Mặc định về trang index
+                                break;
+                        }
+                        break;
+                    // == KẾT THÚC PHẦN ĐỒNG BỘ CHO TKB ==
+                        
                     default:
                         echo "<h4 class='text-center text-secondary'>Trang không tồn tại</h4>";
                         break;
@@ -85,7 +121,6 @@ if (isset($_SESSION['message'])) {
             ?>
         </main>
 
-        <!-- FOOTER -->
         <footer class="bg-dark text-white text-center py-3">
             <small>© 2025 Sinh Viên Vippro - Quản lý Trường học | Khoa CNTT - IUH</small>
         </footer>
