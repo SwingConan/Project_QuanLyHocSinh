@@ -56,14 +56,16 @@ if (isset($_SESSION['message'])) {
                         $controller = new PhanCongController();
 
                         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                                $controller->thucHienPhanCong();
-                            } else {
-                                $controller->hienThiTrangPhanCong();
-                            }
+                            $controller->thucHienPhanCong();
+                        } else {
+                            $controller->hienThiTrangPhanCong();
+                        }
                         break;
 
                     case 'quanlydanhmucgiaovien':
                         include "app/Views/quanlydanhmucgiaovien.php";
+                        break;
+
                     case 'xemdiem':
                         // use the controller so it prepares $dsKy / $bangdiem for the view
                         require_once __DIR__ . '/app/Controllers/cXemDiem.php';

@@ -33,7 +33,7 @@
                 <option value="">-- Chọn giáo viên --</option>
                 <?php
                 while ($gv = $dsGV->fetch_assoc()) {
-                    echo "<option value='{$gv['magv']}'>{$gv['tengv']}</option>";
+                    echo "<option value='{$gv['magv']}'>{$gv['hoten']}</option>";
                 }
                 ?>
             </select>
