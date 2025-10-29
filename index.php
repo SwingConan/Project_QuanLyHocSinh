@@ -31,6 +31,7 @@ if (isset($_SESSION['message'])) {
                     <a href="index.php?act=quanlydanhmucgiaovien" class="text-white me-3 text-decoration-none">
                         Quản lý giáo viên
                     </a>
+                    <a href="index.php?act=xemdiem" class="text-white me-3 text-decoration-none">Xem điểm</a>
                     <a href=" index.php?act=dangxuat" class="text-white text-decoration-none">Đăng xuất</a>
                 </nav>
             </div>
@@ -57,7 +58,11 @@ if (isset($_SESSION['message'])) {
                     case 'dangxuat':
                         echo "<h4 class='text-center text-danger'>Bạn đã đăng xuất!</h4>";
                         break;
-
+                    case 'xemdiem':
+                        include "app/Controllers/cXemDiem.php";
+                        $controller = new cXemDiem();
+                        $controller->hienThiDanhSach();
+                        break;
                     default:
                         echo "<h4 class='text-center text-secondary'>Trang không tồn tại</h4>";
                         break;
