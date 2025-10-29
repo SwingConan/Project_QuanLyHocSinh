@@ -28,10 +28,8 @@ if (isset($_SESSION['message'])) {
                 <nav>
                     <a href="index.php?act=trangchu" class="text-white me-3 text-decoration-none">Trang chủ</a>
                     <a href="index.php?act=quanlydanhmucmonhoc" class="text-white me-3 text-decoration-none">Quản lý môn học</a>
-                    <a href="index.php?act=quanlydanhmucgiaovien" class="text-white me-3 text-decoration-none">
-                        Quản lý giáo viên
-                    </a>
-                    <a href=" index.php?act=dangxuat" class="text-white text-decoration-none">Đăng xuất</a>
+                    <a href="index.php?act=xemdiem" class="text-white me-3 text-decoration-none">Xem điểm</a>
+                    <a href="index.php?act=dangxuat" class="text-white text-decoration-none">Đăng xuất</a>
                 </nav>
             </div>
         </header>
@@ -50,14 +48,17 @@ if (isset($_SESSION['message'])) {
                         include "app/Views/quanlydanhmucmonhoc.php";
                         break;
 
-                    case 'quanlydanhmucgiaovien':
-                        include "app/Views/quanlydanhmucgiaovien.php";
+                    case 'xemdiem':
+                        // use the controller so it prepares $dsKy / $bangdiem for the view
+                        require_once __DIR__ . '/app/Controllers/cXemDiem.php';
+                        $c = new cXemDiem();
+                        $c->hienThiDiem();
                         break;
 
                     case 'dangxuat':
                         echo "<h4 class='text-center text-danger'>Bạn đã đăng xuất!</h4>";
                         break;
-
+                    
                     default:
                         echo "<h4 class='text-center text-secondary'>Trang không tồn tại</h4>";
                         break;
