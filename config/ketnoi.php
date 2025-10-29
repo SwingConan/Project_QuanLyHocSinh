@@ -1,20 +1,20 @@
 <?php
-if (!class_exists('clsKetNoi')) {
-    class clsKetNoi {
+// config/ketnoi.php
 
-        public function moKetNoi()
-        {
-            $local = "localhost";
-            $user = "root";
-            $pass = "";
-            $db = "quanlytruonghoc";
-            return mysqli_connect($local, $user, $pass, $db);
-        }
+$servername = "localhost";
+$username = "root";
+$password = ""; 
+$dbname = "managetkb"; 
 
-        public function dongKetNoi($conn)
-        {
-            $conn->close();
-        }
-    }
+// Tạo kết nối
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Kiểm tra kết nối
+if ($conn->connect_error) {
+  die("Kết nối CSDL thất bại: " . $conn->connect_error);
 }
+
+
+$conn->set_charset("utf8mb4");
+
 ?>
