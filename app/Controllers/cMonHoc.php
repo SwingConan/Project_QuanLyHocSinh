@@ -38,5 +38,22 @@ class cMonHoc {
         $tbl = $p->deleteSubject($mamh);
         return $tbl;
     }
+
+    public function checkDuplicateSubject($tenmh, $exclude_id = null) {
+        $p = new clsKetNoi();
+        $conn = $p->moKetNoi();
+        $tenmh = mysqli_real_escape_string($conn, $tenmh);
+
+        if ($exclude_id) {
+            // Khi sửa, loại trừ môn học hiện tại ra khỏi kiểm tra
+            $sql = "SELECT * FROM monhoc WHERE tenmh = '$tenmh' AND mamh != '$exclude_id'";
+        } else {
+            // Khi thêm
+            $sql = "SELECT * FROM monhoc WHERE tenmh = '$tenmh'";
+        }
+
+        $result = $conn->query($sql);
+        return ($result && $result->num_rows > 0);
+    }
 }
 ?>
