@@ -10,6 +10,7 @@ if (isset($_SESSION['message'])) {
 ?>
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,6 +29,10 @@ if (isset($_SESSION['message'])) {
                     <a href="index.php?act=trangchu" class="text-white me-3 text-decoration-none">Trang chủ</a>
                     <a href="index.php?act=quanlydanhmucmonhoc" class="text-white me-3 text-decoration-none">Quản lý môn học</a>
                     <a href="index.php?act=phanCongGVCN" class="text-white me-3 text-decoration-none">Phân công GVCN</a>
+                    <a href="index.php?act=quanlydanhmucgiaovien" class="text-white me-3 text-decoration-none">
+                        Quản lý giáo viên
+                    </a>
+                    <a href="index.php?act=xemdiem" class="text-white me-3 text-decoration-none">Xem điểm</a>
                     <a href="index.php?act=dangxuat" class="text-white text-decoration-none">Đăng xuất</a>
                 </nav>
             </div>
@@ -57,6 +62,15 @@ if (isset($_SESSION['message'])) {
                             }
                         break;
 
+                    case 'quanlydanhmucgiaovien':
+                        include "app/Views/quanlydanhmucgiaovien.php";
+                    case 'xemdiem':
+                        // use the controller so it prepares $dsKy / $bangdiem for the view
+                        require_once __DIR__ . '/app/Controllers/cXemDiem.php';
+                        $c = new cXemDiem();
+                        $c->hienThiDiem();
+                        break;
+
                     case 'dangxuat':
                         echo "<h4 class='text-center text-danger'>Bạn đã đăng xuất!</h4>";
                         break;
@@ -79,4 +93,5 @@ if (isset($_SESSION['message'])) {
 
     <script src="./public/vendor/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
