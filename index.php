@@ -10,6 +10,7 @@ if (isset($_SESSION['message'])) {
 ?>
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +28,10 @@ if (isset($_SESSION['message'])) {
                 <nav>
                     <a href="index.php?act=trangchu" class="text-white me-3 text-decoration-none">Trang chủ</a>
                     <a href="index.php?act=quanlydanhmucmonhoc" class="text-white me-3 text-decoration-none">Quản lý môn học</a>
-                    <a href="index.php?act=dangxuat" class="text-white text-decoration-none">Đăng xuất</a>
+                    <a href="index.php?act=quanlydanhmucgiaovien" class="text-white me-3 text-decoration-none">
+                        Quản lý giáo viên
+                    </a>
+                    <a href=" index.php?act=dangxuat" class="text-white text-decoration-none">Đăng xuất</a>
                 </nav>
             </div>
         </header>
@@ -44,6 +48,10 @@ if (isset($_SESSION['message'])) {
 
                     case 'quanlydanhmucmonhoc':
                         include "app/Views/quanlydanhmucmonhoc.php";
+                        break;
+
+                    case 'quanlydanhmucgiaovien':
+                        include "app/Views/quanlydanhmucgiaovien.php";
                         break;
 
                     case 'dangxuat':
@@ -68,4 +76,5 @@ if (isset($_SESSION['message'])) {
 
     <script src="./public/vendor/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

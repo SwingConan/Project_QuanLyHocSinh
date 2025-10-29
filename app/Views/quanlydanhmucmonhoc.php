@@ -84,6 +84,7 @@ if ($tbl && $tbl->num_rows > 0) {
     <link rel="stylesheet" href="./public/vendor/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
     <script src="./public/vendor/bootstrap-5.3.3-dist/js/jquery-3.7.1.min.js"></script>
     <script src="./public/vendor/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
+    
 </head>
 
 <body class="bg-light">
