@@ -35,12 +35,6 @@ if (isset($_POST['action']) && $_POST['action'] == 'edit') {
     $khoilop = isset($_POST['khoilop']) ? implode(",", $_POST['khoilop']) : '';
     $trangthai = $_POST['trangthai'];
 
-    if ($p->checkDuplicateSubject($tenmh)) {
-    $_SESSION['message'] = "Tên môn học đã tồn tại, vui lòng nhập tên khác!";
-    header("Location: index.php?act=quanlydanhmucmonhoc");
-    exit();
-    }
-
     if ($p->updateSubject($mamh, $tenmh, $sotiet, $khoilop, $trangthai)) {
         $_SESSION['message'] = "Cập nhật thành công!";
         header("Location: index.php?act=quanlydanhmucmonhoc");
