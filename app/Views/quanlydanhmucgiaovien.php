@@ -57,7 +57,9 @@ $keyword = $_GET['keyword'] ?? '';
 
 // Với bản đơn giản này ta liệt kê toàn bộ + JOIN GROUP_CONCAT.
 // (Bạn có thể nâng cấp search sau.)
-$danhsach = $pGV->getAllTeachers();
+$danhsach = ($action === 'search' && $keyword !== '')
+  ? $pGV->getAllTeachersBySearch($keyword)   // <-- dùng search
+  : $pGV->getAllTeachers();                  // <-- mặc định
 
 // Lấy danh sách môn cho modal THÊM
 $dsMonHoc_Add = $pMH->getAllSubjects();
